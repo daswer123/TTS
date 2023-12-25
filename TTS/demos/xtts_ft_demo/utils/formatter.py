@@ -101,7 +101,7 @@ def format_audio_list(audio_files, target_language="en", out_path=None, buffer=0
             else:
                 sentence += word.word
 
-            if word.word[-1] in ["!", ".", "?"]:
+            if word.word[-1] in ["!", ".", "?","。"]: # "。" for ja lang
                 sentence = sentence[1:]
                 # Expand number and abbreviations plus normalization
                 sentence = multilingual_cleaners(sentence, target_language)

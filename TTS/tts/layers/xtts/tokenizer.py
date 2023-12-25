@@ -229,6 +229,12 @@ _abbreviations = {
             # Korean doesn't typically use abbreviations in the same way as Latin-based scripts.
         ]
     ],
+    "ja": [
+        (re.compile("\\b%s\\b" % x[0]), x[1])
+        for x in [
+            # Japanice doesn't typically use abbreviations in the same way as Latin-based scripts.
+        ]
+    ],
 }
 
 
@@ -425,6 +431,18 @@ _symbols_multilingual = {
             ("°", " 도 "),
         ]
     ],
+    "ja": [
+        (re.compile(r"%s" % re.escape(x[0])), x[1])
+        for x in [
+            ("&", " と "),
+            ("@", " アットマーク "),
+            ("%", " パーセント "),
+            ("#", " ナンバー "),
+            ("$", " ドル "),
+            ("£", " ポンド "),
+            ("°", " 度"),
+        ]
+    ],
 }
 
 
@@ -450,6 +468,7 @@ _ordinal_re = {
     "tr": re.compile(r"([0-9]+)(\.|inci|nci|uncu|üncü|\.)"),
     "hu": re.compile(r"([0-9]+)(\.|adik|edik|odik|edik|ödik|ödike|ik)"),
     "ko": re.compile(r"([0-9]+)(번째|번|차|째)"),
+    "ja": re.compile(r"([0-9一二三四五六七八九十]+)(番目番目)"),
 }
 _number_re = re.compile(r"[0-9]+")
 _currency_re = {
@@ -761,6 +780,10 @@ def test_expand_numbers_multilingual():
         ("12.5 초 안에.", "십이 점 다섯 초 안에.", "ko"),
         ("50 명의 병사가 있었다.", "오십 명의 병사가 있었다.", "ko"),
         ("이것은 1 번째 테스트입니다", "이것은 첫 번째 테스트입니다", "ko"),
+        # Japanese
+        ("12.5秒で。", "十二点五秒で。", "ja"),
+        ("兵士が50人いました。", "兵士が五十人いました。", "ja"),
+        ("これは1番目のテストです", "これは一番目のテストです", "ja"),
     ]
     for a, b, lang in test_cases:
         out = expand_numbers_multilingual(a, lang=lang)
@@ -830,6 +853,7 @@ def test_symbols_multilingual():
         ("Pilim %14 dolu.", "Pilim yüzde 14 dolu.", "tr"),
         ("Az akkumulátorom töltöttsége 14%", "Az akkumulátorom töltöttsége 14 százalék", "hu"),
         ("배터리 잔량이 14%입니다.", "배터리 잔량이 14 퍼센트입니다.", "ko"),
+        ("これは私の1番目のテストです。", "これは私の一番目のテストです。", "ja"),
     ]
 
     for a, b, lang in test_cases:

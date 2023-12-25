@@ -75,6 +75,12 @@ def train_gpt(language, num_epochs, batch_size, grad_acumm, train_csv, eval_csv,
             [TOKENIZER_FILE_LINK, XTTS_CHECKPOINT_LINK, XTTS_CONFIG_LINK], CHECKPOINTS_OUT_PATH, progress_bar=True
         )
 
+    # Set loader_workers to 0 if the language is Japanese, because fugashi does not support multiprocessing
+
+    num_workers = 8
+    if language == "ja":
+        num_workers = 0
+
     # init args and config
     model_args = GPTArgs(
         max_conditioning_length=132300,  # 6 secs
@@ -110,7 +116,7 @@ def train_gpt(language, num_epochs, batch_size, grad_acumm, train_csv, eval_csv,
         batch_size=BATCH_SIZE,
         batch_group_size=48,
         eval_batch_size=BATCH_SIZE,
-        num_loader_workers=8,
+        num_loader_workers=num_workers,
         eval_split_max_size=256,
         print_step=50,
         plot_step=100,
